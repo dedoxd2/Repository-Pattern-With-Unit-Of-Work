@@ -33,7 +33,7 @@ namespace RepositoryPatternWithUOfW.EF.Repositories
         {
             return _context.Set<T>().ToList();  
         }
-        public T Find(Expression<Func<T,bool>> match ,string[] includes = null)
+        public T Find(Expression<Func<T,bool>> criteria ,string[] includes = null)
         {
 
             IQueryable<T> query = _context.Set<T>();    
@@ -46,10 +46,10 @@ namespace RepositoryPatternWithUOfW.EF.Repositories
 
                 }
             }
-            return query.SingleOrDefault(match);
+            return query.SingleOrDefault(criteria);
         }
 
-        public IEnumerable<T> FindAll(Expression<Func<T, bool>> match, string[] includes )// the Include Part is not working here 
+        public IEnumerable<T> FindAll(Expression<Func<T, bool>> criteria, string[] includes )// the Include Part is not working here 
         {
             IQueryable<T> query = _context.Set<T>();
             if (includes != null)
@@ -59,24 +59,24 @@ namespace RepositoryPatternWithUOfW.EF.Repositories
                     query.Include(include);
                 }
             }
-            return query.Where(match).ToList();
+            return query.Where(criteria).ToList();
         }
 
 
-        public IEnumerable<T> FindAll(Expression<Func<T,bool>> match , int take, int skip)
+        public IEnumerable<T> FindAll(Expression<Func<T,bool>> criteria , int take, int skip)
         {
-            return _context.Set<T>().Where(match).Skip(skip).Take(take).ToList();
+            return _context.Set<T>().Where(criteria).Skip(skip).Take(take).ToList();
         }
 
 
-      public  IEnumerable<T> FindAll(Expression<Func<T, bool>> match, int? take, int? skip,
+      public  IEnumerable<T> FindAll(Expression<Func<T, bool>> criteria, int? take, int? skip,
     Expression<Func<T, object>> orderBy = null, string orderByDirection = OrderBy.Ascending)
         {
-            IQueryable<T> query = _context.Set<T>().Where(match);
+            IQueryable<T> query = _context.Set<T>().Where(criteria);
             if (take.HasValue)
-                query = query.Take((int)take);
+                query = query.Take(take.Value);
             if (skip.HasValue)
-                query = query.Skip((int)skip);
+                query = query.Skip(skip.Value);
 
             if (orderBy != null)
             {
@@ -113,5 +113,35 @@ namespace RepositoryPatternWithUOfW.EF.Repositories
 
             return enttities;
         }
+
+
+
+        public T Update(T entity)
+        {
+            _context.Update(entity);
+            return entity;
+        }
+
+
+        public void Delete(T entity)
+        {
+            _context.Set<T>().Remove(entity);
+         //   _context.SaveChanges();
+        }
+
+        public void DeleteRange(IEnumerable<T> enttities)
+        {
+            _context.Set<T>().RemoveRange(enttities);
+        }
+
+
+        /*     
+             
+             void Attach(T entity);
+             int Count();
+             int Count(Expression<Func<T, bool>> criteria);
+     */
+
+
     }
 }

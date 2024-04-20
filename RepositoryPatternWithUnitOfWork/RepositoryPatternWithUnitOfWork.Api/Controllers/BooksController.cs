@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using RepositoryPatternWithUOfW.Core;
 using RepositoryPatternWithUOfW.Core.Consts;
 using RepositoryPatternWithUOfW.Core.Interfaces;
 using RepositoryPatternWithUOfW.Core.Models;
@@ -11,57 +13,62 @@ namespace RepositoryPatternWithUnitOfWork.Api.Controllers
     public class BooksController : ControllerBase
     {
 
-        private readonly IBaseRepository<Book> _booksRepository;
+        /*private readonly IBaseRepository<Book> _booksRepository;
         private readonly IBaseRepository<Author> _authorsRepository;
-
-
-
         public BooksController(IBaseRepository<Book> booksRepository , IBaseRepository<Author> authorsRepository)
         {
             _booksRepository = booksRepository;
             _authorsRepository = authorsRepository;
-
         }
+*/
+
+        private readonly IUnitOfWork _unitOfWork;
+
+        public BooksController(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork; 
+        }
+
 
         [HttpGet]
         public IActionResult Get(int id) 
         {
-        return Ok(_booksRepository.GetById(id));
+        return Ok(_unitOfWork.Books.GetById(id));
         }
 
         [HttpGet("GetAll")]
         public IActionResult GetAll() 
         {
-            return Ok(_booksRepository.GetAll());
+            return Ok(_unitOfWork.Books.GetAll());
         }
 
         [HttpGet("GetByName")]
         public IActionResult GetByName(string name) 
         {
-            return Ok(_booksRepository.Find(x => x.Title == name , new[] {"Author"}));
+            return Ok(_unitOfWork.Books.Find(x => x.Title == name , new[] {"Author"}));
         }
 
         [HttpGet("GetAllWithAuthors")]
         public IActionResult GetAllWithAuthors(string name) 
         {
-            return  Ok(_booksRepository.FindAll(x => x.Title.Contains (name ) , new[] {"Authors"}));
+            return  Ok(_unitOfWork.Books.FindAll(x => x.Title.Contains (name ) , new[] {"Authors"}));
         }
 
 
         [HttpGet("GetOrdered")]
         public IActionResult GetOrdered(string name)
         {
-            return Ok(_booksRepository.FindAll(b => b.Title.Contains(name) ,null,null, b => b.Id ,OrderBy.Descending));
+            return Ok(_unitOfWork.Books.FindAll(b => b.Title.Contains(name) ,null,null, b => b.Id ,OrderBy.Descending));
         }
 
         [HttpPost("AddOne")]
         public IActionResult Post([FromBody]Book book) // We can Solve Author Issue by Using DTO
         {
 
-            Author author = _authorsRepository.GetById(book.AuthorId);
+            Author author = _unitOfWork.Authors.GetById(book.AuthorId);
             book.Author = author;  
 
-            return Ok(_booksRepository.Add(book));
+            return Ok(_unitOfWork.Books.Add(book));
         }
 
 
