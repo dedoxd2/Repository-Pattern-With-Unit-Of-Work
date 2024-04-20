@@ -19,12 +19,20 @@ namespace RepositoryPatternWithUnitOfWork.Api.Controllers
 
 
         [HttpGet]
-
         public IActionResult GetById(int Id)
         {
-
             return Ok(_authorsRepository.GetById(Id));
         }
+
+
+        [HttpGet("GetByIdAsync")]
+        public async Task<IActionResult> GetByIdAsync(int Id)
+        {
+            return Ok(await _authorsRepository.GetByIdAsync(Id));
+        }
+
+
     }
+
 }
  
