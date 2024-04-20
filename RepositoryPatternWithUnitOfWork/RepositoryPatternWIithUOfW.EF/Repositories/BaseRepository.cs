@@ -87,16 +87,31 @@ namespace RepositoryPatternWithUOfW.EF.Repositories
                 else
                 {
                     query = query.OrderByDescending(orderBy);
-
                 }
-
             }
-
             return query.ToList();
-
-
 
         }
 
+        public T Add(T entity)
+        {
+            _context.Set<T>().Add(entity);
+            _context.SaveChanges();
+            return entity; 
+        }
+
+        public IEnumerable<T> AddRange(IEnumerable<T> enttities)
+        {
+
+            _context.Set<T>().AddRange(enttities);
+            _context.SaveChanges();
+            /*  foreach(T entity in enttities)
+              {
+                  _context.Set<T>().Add(entity);
+                  _context.SaveChanges();
+              }*/
+
+            return enttities;
+        }
     }
 }

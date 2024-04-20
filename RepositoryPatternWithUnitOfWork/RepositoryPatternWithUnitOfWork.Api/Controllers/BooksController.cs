@@ -12,10 +12,15 @@ namespace RepositoryPatternWithUnitOfWork.Api.Controllers
     {
 
         private readonly IBaseRepository<Book> _booksRepository;
+        private readonly IBaseRepository<Author> _authorsRepository;
 
-        public BooksController(IBaseRepository<Book> booksRepository)
+
+
+        public BooksController(IBaseRepository<Book> booksRepository , IBaseRepository<Author> authorsRepository)
         {
             _booksRepository = booksRepository;
+            _authorsRepository = authorsRepository;
+
         }
 
         [HttpGet]
@@ -47,6 +52,16 @@ namespace RepositoryPatternWithUnitOfWork.Api.Controllers
         public IActionResult GetOrdered(string name)
         {
             return Ok(_booksRepository.FindAll(b => b.Title.Contains(name) ,null,null, b => b.Id ,OrderBy.Descending));
+        }
+
+        [HttpPost("AddOne")]
+        public IActionResult Post([FromBody]Book book) // We can Solve Author Issue by Using DTO
+        {
+
+            Author author = _authorsRepository.GetById(book.AuthorId);
+            book.Author = author;  
+
+            return Ok(_booksRepository.Add(book));
         }
 
 

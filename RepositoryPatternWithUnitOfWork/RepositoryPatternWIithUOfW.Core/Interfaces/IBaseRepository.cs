@@ -22,6 +22,9 @@ namespace RepositoryPatternWithUOfW.Core.Interfaces
             Expression<Func<T, object>> orderBy =null , string orderByDirection = OrderBy.Ascending
             );
 
+        T Add(T entity);
+
+        IEnumerable<T> AddRange(IEnumerable<T> enttities);
 
     }
 }
