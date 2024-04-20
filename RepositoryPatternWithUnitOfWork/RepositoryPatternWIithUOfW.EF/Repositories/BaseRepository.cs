@@ -96,7 +96,6 @@ namespace RepositoryPatternWithUOfW.EF.Repositories
         public T Add(T entity)
         {
             _context.Set<T>().Add(entity);
-            _context.SaveChanges();
             return entity; 
         }
 
@@ -104,7 +103,6 @@ namespace RepositoryPatternWithUOfW.EF.Repositories
         {
 
             _context.Set<T>().AddRange(enttities);
-            _context.SaveChanges();
             /*  foreach(T entity in enttities)
               {
                   _context.Set<T>().Add(entity);
@@ -135,12 +133,24 @@ namespace RepositoryPatternWithUOfW.EF.Repositories
         }
 
 
-        /*     
-             
-             void Attach(T entity);
-             int Count();
-             int Count(Expression<Func<T, bool>> criteria);
-     */
+        public void Attach(T entity)
+        {
+            _context.Set<T>().Attach(entity);
+        }
+
+        public int Count()
+        {
+
+            return _context.Set<T>().Count();
+        }
+        
+        
+        public int Count(Expression<Func<T, bool>> criteria)
+        {
+
+            return _context.Set<T>().Count(criteria);
+        }
+     
 
 
     }

@@ -11,7 +11,7 @@ namespace RepositoryPatternWithUOfW.Core
     public interface IUnitOfWork : IDisposable
     {
         IBaseRepository<Author> Authors { get; }
-        IBaseRepository<Book> Books { get; }
+        IBooksRepository Books { get; }
 
 
         int Complete();

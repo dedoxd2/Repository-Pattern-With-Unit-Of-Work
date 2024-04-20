@@ -26,6 +26,7 @@ namespace RepositoryPatternWithUOfW.Core.Interfaces
 
         T Update (T entity);    
         void Delete(T entity);
+        void DeleteRange(IEnumerable<T> enttities);
         void Attach(T entity);
         int Count();
         int Count(Expression<Func<T, bool>> criteria);  

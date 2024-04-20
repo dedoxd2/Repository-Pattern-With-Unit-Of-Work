@@ -62,13 +62,15 @@ namespace RepositoryPatternWithUnitOfWork.Api.Controllers
         }
 
         [HttpPost("AddOne")]
-        public IActionResult Post([FromBody]Book book) // We can Solve Author Issue by Using DTO
+        public IActionResult Post([FromBody]Book book) // We can Solve Autho r Issue by Using DTO
         {
 
             Author author = _unitOfWork.Authors.GetById(book.AuthorId);
-            book.Author = author;  
-
-            return Ok(_unitOfWork.Books.Add(book));
+            book.Author = author;
+            var localBook = _unitOfWork.Books.Add(book);
+            _unitOfWork.Complete();
+           // _unitOfWork.Books.CustomMethodForBooks();
+            return Ok(localBook);
         }
 
 
